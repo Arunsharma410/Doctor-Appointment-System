@@ -18,15 +18,20 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Login function
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-  };
+ const login = (userData) => {
+  setUser(userData);
 
+  localStorage.setItem('user', JSON.stringify(userData));
+
+  if (userData.token) {
+    localStorage.setItem('token', userData.token);
+  }
+};
   // Logout function
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+   localStorage.removeItem('user');
+localStorage.removeItem('token');
     window.location.href = '/login';
   };
 
