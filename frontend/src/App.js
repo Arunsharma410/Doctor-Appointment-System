@@ -5,7 +5,7 @@ import ManageUsers from './pages/admin/ManageUsers';
 import ManageAppointments from './pages/admin/ManageAppointments';
 import DoctorDashboard from './pages/doctor/Dashboard';
 import DoctorAppointments from './pages/doctor/DoctorAppointments';
-import DoctorProfilePage from './pages/doctor/DoctorProfile';
+import DoctorDetails from './pages/DoctorDetails';
 import DoctorAvailability from './pages/doctor/Availability';
 import PatientDashboard from './pages/patient/Dashboard';
 import MyAppointments from './pages/patient/MyAppointments';
@@ -146,12 +146,13 @@ function App() {
     </DoctorRoute>
   }
 />
+{/* Doctor Details Route */}
 <Route
-  path="/doctor/profile"
+  path="/doctors/:id"
   element={
-    <DoctorRoute>
-      <DoctorProfilePage />
-    </DoctorRoute>
+    <Layout>
+      <DoctorDetails />
+    </Layout>
   }
 />
 {/* Admin Routes */}
