@@ -3,7 +3,7 @@
 Full stack MERN application for booking doctor appointments online.
 
 ## 🌐 Live Demo
-https://doctor-appointment-system.vercel.app
+https://doctor-appointment-system-six-iota.vercel.app/
 
 ## ✨ Features
 - 3 user roles: Patient, Doctor, Admin
