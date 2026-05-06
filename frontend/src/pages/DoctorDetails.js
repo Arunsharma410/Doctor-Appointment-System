@@ -9,6 +9,20 @@ const DoctorDetails = () => {
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+
+  const timeSlots = [
+    '09:00 AM',
+    '10:00 AM',
+    '11:00 AM',
+    '12:00 PM',
+    '02:00 PM',
+    '03:00 PM',
+    '04:00 PM',
+    '05:00 PM',
+  ];
+
   useEffect(() => {
     fetchDoctor();
   }, []);
@@ -21,7 +35,6 @@ const DoctorDetails = () => {
         setDoctor(response.data.data);
       }
     } catch (error) {
-      console.log(error);
       toast.error('Failed to load doctor');
     } finally {
       setLoading(false);
@@ -29,19 +42,21 @@ const DoctorDetails = () => {
   };
 
   const handleBooking = async () => {
+    if (!selectedDate || !selectedTime) {
+      return toast.error('Please select date and time');
+    }
+
     try {
       const response = await axios.post('/appointments/book', {
         doctorId: id,
-        date: new Date().toISOString().split('T')[0],
-        timeSlot: '10:00 AM',
+        date: selectedDate,
+        timeSlot: selectedTime,
       });
 
       if (response.data.success) {
         toast.success('Appointment booked successfully!');
       }
     } catch (error) {
-      console.log(error);
-
       toast.error(
         error.response?.data?.message || 'Booking failed'
       );
@@ -60,7 +75,7 @@ const DoctorDetails = () => {
     <div className="max-w-3xl mx-auto p-10">
       <div className="bg-white rounded-xl shadow-md p-8">
 
-        <h1 className="text-3xl font-bold mb-4">
+        <h1 className="text-3xl font-bold mb-2">
           {doctor?.userId?.name}
         </h1>
 
@@ -76,9 +91,48 @@ const DoctorDetails = () => {
           ₹{doctor?.fees}
         </p>
 
+        {/* Date Picker */}
+        <div className="mb-6">
+          <label className="block mb-2 font-semibold">
+            Select Date
+          </label>
+
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            min={new Date().toISOString().split('T')[0]}
+            className="w-full border rounded-lg px-4 py-3"
+          />
+        </div>
+
+        {/* Time Slots */}
+        <div className="mb-6">
+          <label className="block mb-2 font-semibold">
+            Select Time Slot
+          </label>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {timeSlots.map((slot) => (
+              <button
+                key={slot}
+                onClick={() => setSelectedTime(slot)}
+                className={`py-2 rounded-lg border ${
+                  selectedTime === slot
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-700'
+                }`}
+              >
+                {slot}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Booking Button */}
         <button
           onClick={handleBooking}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
         >
           Book Appointment
         </button>
