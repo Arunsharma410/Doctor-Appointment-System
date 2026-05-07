@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { FaBars, FaTimes, FaUserMd, FaUser } from 'react-icons/fa';
+import { HeartPulse, Menu, X, User } from 'lucide-react';
+import { Button } from '../ui/Button';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -13,7 +14,6 @@ const Navbar = () => {
     navigate('/login');
   };
 
-  // Get dashboard link based on role
   const getDashboardLink = () => {
     if (user?.role === 'admin') return '/admin/dashboard';
     if (user?.role === 'doctor') return '/doctor/dashboard';
@@ -22,140 +22,89 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200 fixed w-full top-0 z-50 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <FaUserMd className="text-blue-600 text-2xl" />
-            <span className="text-xl font-bold text-blue-600">
-              DocBook
-            </span>
+          <Link to="/" className="flex items-center gap-2">
+            <HeartPulse className="text-primary h-6 w-6" />
+            <span className="text-xl font-bold text-slate-900 tracking-tight">DocBook</span>
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link
-              to="/"
-              className="text-gray-600 hover:text-blue-600 font-medium transition-colors"
-            >
+            <Link to="/" className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">
               Home
             </Link>
-            <Link
-              to="/doctors"
-              className="text-gray-600 hover:text-blue-600 font-medium transition-colors"
-            >
-              Doctors
+            <Link to="/doctors" className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">
+              Find Doctors
             </Link>
 
             {user ? (
               <div className="flex items-center space-x-4">
-                <Link
-                  to={getDashboardLink()}
-                  className="text-gray-600 hover:text-blue-600 font-medium transition-colors"
-                >
+                <Link to={getDashboardLink()} className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">
                   Dashboard
                 </Link>
-                <div className="flex items-center space-x-2">
-                  <FaUser className="text-blue-600" />
-                  <span className="text-gray-700 font-medium">
-                    {user.name}
-                  </span>
+                <div className="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-full">
+                  <User className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-slate-700">{user.name}</span>
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors font-medium"
-                >
+                <Button variant="outline" onClick={handleLogout}>
                   Logout
-                </button>
+                </Button>
               </div>
             ) : (
-              <div className="flex items-center space-x-4">
-                <Link
-                  to="/login"
-                  className="text-blue-600 font-medium hover:text-blue-700 transition-colors"
-                >
-                  Login
+              <div className="flex items-center space-x-3">
+                <Link to="/login">
+                  <Button variant="ghost">Login</Button>
                 </Link>
-                <Link
-                  to="/register"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                >
-                  Register
+                <Link to="/register">
+                  <Button>Get Started</Button>
                 </Link>
               </div>
             )}
           </div>
 
           {/* Mobile menu button */}
-          <button
-            className="md:hidden text-gray-600"
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? (
-              <FaTimes className="text-2xl" />
-            ) : (
-              <FaBars className="text-2xl" />
-            )}
-          </button>
+            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t">
+          <div className="md:hidden py-4 border-t border-slate-100 bg-white absolute top-16 left-0 w-full px-4 shadow-lg">
             <div className="flex flex-col space-y-4">
-              <Link
-                to="/"
-                className="text-gray-600 hover:text-blue-600 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link to="/" className="text-sm font-medium text-slate-600" onClick={() => setIsMenuOpen(false)}>
                 Home
               </Link>
-              <Link
-                to="/doctors"
-                className="text-gray-600 hover:text-blue-600 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Doctors
+              <Link to="/doctors" className="text-sm font-medium text-slate-600" onClick={() => setIsMenuOpen(false)}>
+                Find Doctors
               </Link>
 
               {user ? (
                 <>
-                  <Link
-                    to={getDashboardLink()}
-                    className="text-gray-600 hover:text-blue-600 font-medium"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
+                  <Link to={getDashboardLink()} className="text-sm font-medium text-slate-600" onClick={() => setIsMenuOpen(false)}>
                     Dashboard
                   </Link>
-                  <span className="text-gray-700 font-medium">
-                    {user.name}
-                  </span>
-                  <button
-                    onClick={handleLogout}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 w-full text-left"
-                  >
+                  <Button variant="destructive" className="w-full" onClick={handleLogout}>
                     Logout
-                  </button>
+                  </Button>
                 </>
               ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="text-blue-600 font-medium"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Login
+                <div className="flex flex-col space-y-2 pt-2 border-t border-slate-100">
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="outline" className="w-full">Login</Button>
                   </Link>
-                  <Link
-                    to="/register"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-center"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Register
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)}>
+                    <Button className="w-full">Get Started</Button>
                   </Link>
-                </>
+                </div>
               )}
             </div>
           </div>

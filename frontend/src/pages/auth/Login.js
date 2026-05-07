@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import axios from '../../utils/axios';
 import toast from 'react-hot-toast';
-import { FaUserMd, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { Stethoscope, Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../../components/ui/Card';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -93,159 +94,143 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full">
-
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="bg-blue-600 p-4 rounded-full">
-              <FaUserMd className="text-white text-3xl" />
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Logo/Brand */}
+        <div className="flex justify-center mb-8">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="bg-primary p-2.5 rounded-xl">
+              <Stethoscope className="w-6 h-6 text-primary-foreground" />
             </div>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-800">Welcome Back!</h1>
-          <p className="text-gray-600 mt-2">
-            Sign in to your DocBook account
-          </p>
+            <span className="text-2xl font-bold tracking-tight text-slate-900">
+              DocBook
+            </span>
+          </Link>
         </div>
 
-        {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <form onSubmit={handleSubmit}>
+        <Card className="border-none shadow-xl shadow-slate-200/50">
+          <CardHeader className="space-y-2 text-center pb-6">
+            <CardTitle className="text-2xl font-bold tracking-tight">Welcome back</CardTitle>
+            <CardDescription className="text-slate-500">
+              Enter your credentials to access your account
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email Field */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-700">
+                  Email
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="name@example.com"
+                    className={`flex h-11 w-full rounded-md border bg-transparent pl-10 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors ${
+                      errors.email ? 'border-destructive focus-visible:ring-destructive/20' : 'border-input focus-visible:ring-primary/20 hover:border-slate-400'
+                    }`}
+                  />
+                </div>
+                {errors.email && (
+                  <p className="text-[0.8rem] font-medium text-destructive">{errors.email}</p>
+                )}
+              </div>
 
-            {/* Email Field */}
-            <div className="mb-6">
-              <label className="block text-gray-700 font-medium mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                  errors.email
-                    ? 'border-red-500 bg-red-50'
-                    : 'border-gray-300 hover:border-blue-400'
-                }`}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.email}
-                </p>
-              )}
-            </div>
+              {/* Password Field */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-700">
+                    Password
+                  </label>
+                  <Link to="#" className="text-sm font-medium text-primary hover:underline">
+                    Forgot password?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="••••••••"
+                    className={`flex h-11 w-full rounded-md border bg-transparent pl-10 pr-10 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors ${
+                      errors.password ? 'border-destructive focus-visible:ring-destructive/20' : 'border-input focus-visible:ring-primary/20 hover:border-slate-400'
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-[0.8rem] font-medium text-destructive">{errors.password}</p>
+                )}
+              </div>
 
-            {/* Password Field */}
-            <div className="mb-6">
-              <label className="block text-gray-700 font-medium mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors pr-12 ${
-                    errors.password
-                      ? 'border-red-500 bg-red-50'
-                      : 'border-gray-300 hover:border-blue-400'
-                  }`}
-                />
-                {/* Show/Hide password button */}
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full mt-2"
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Signing in...
+                  </>
+                ) : (
+                  'Sign in'
+                )}
+              </button>
+            </form>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+             {/* Quick Login Buttons for Testing */}
+            <div className="w-full space-y-3 pt-4 border-t border-slate-100">
+               <p className="text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
+                Test Accounts
+              </p>
+              <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-600"
+                  onClick={() => setFormData({ email: 'john@gmail.com', password: '123456' })}
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-3"
                 >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  Patient
+                </button>
+                <button
+                   type="button"
+                  onClick={() => setFormData({ email: 'sarah@gmail.com', password: '123456' })}
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-3"
+                >
+                  Doctor
+                </button>
+                <button
+                   type="button"
+                  onClick={() => setFormData({ email: 'admin@gmail.com', password: '123456' })}
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-3"
+                >
+                  Admin
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.password}
-                </p>
-              )}
             </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              {loading ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Signing in...
-                </>
-              ) : (
-                'Sign In'
-              )}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="my-6 flex items-center">
-            <div className="flex-1 border-t border-gray-300"></div>
-            <span className="px-4 text-gray-500 text-sm">OR</span>
-            <div className="flex-1 border-t border-gray-300"></div>
-          </div>
-
-          {/* Quick Login Buttons for Testing */}
-          <div className="space-y-2">
-            <p className="text-center text-gray-500 text-sm mb-3">
-              Quick login for testing:
-            </p>
-            <button
-              onClick={() => {
-                setFormData({
-                  email: 'john@gmail.com',
-                  password: '123456',
-                });
-              }}
-              className="w-full border border-blue-600 text-blue-600 py-2 rounded-lg hover:bg-blue-50 transition-colors text-sm font-medium"
-            >
-              Login as Patient
-            </button>
-            <button
-              onClick={() => {
-                setFormData({
-                  email: 'sarah@gmail.com',
-                  password: '123456',
-                });
-              }}
-              className="w-full border border-green-600 text-green-600 py-2 rounded-lg hover:bg-green-50 transition-colors text-sm font-medium"
-            >
-              Login as Doctor
-            </button>
-            <button
-              onClick={() => {
-                setFormData({
-                  email: 'admin@gmail.com',
-                  password: '123456',
-                });
-              }}
-              className="w-full border border-purple-600 text-purple-600 py-2 rounded-lg hover:bg-purple-50 transition-colors text-sm font-medium"
-            >
-              Login as Admin
-            </button>
-          </div>
-
-          {/* Register Link */}
-          <p className="text-center text-gray-600 mt-6">
-            Don't have an account?{' '}
-            <Link
-              to="/register"
-              className="text-blue-600 font-semibold hover:underline"
-            >
-              Register here
-            </Link>
-          </p>
-        </div>
+            <div className="text-sm text-slate-500 text-center w-full mt-4">
+              Don't have an account?{' '}
+              <Link to="/register" className="text-primary hover:underline font-medium">
+                Sign up
+              </Link>
+            </div>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );

@@ -4,16 +4,20 @@ import axios from '../../utils/axios';
 import { useAuth } from '../../context/AuthContext';
 import AdminLayout from '../../components/admin/AdminLayout';
 import {
-  FaUserMd,
-  FaUsers,
-  FaCalendarAlt,
-  FaRupeeSign,
-  FaArrowRight,
-  FaCheckCircle,
-  FaClock,
-  FaTimesCircle,
-  FaUser,
-} from 'react-icons/fa';
+  Users,
+  Stethoscope,
+  Calendar,
+  IndianRupee,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  ArrowRight,
+  User
+} from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
+import { Badge } from '../../components/ui/Badge';
+import { Skeleton } from '../../components/ui/Skeleton';
+import { Avatar, AvatarFallback } from '../../components/ui/Avatar';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -37,21 +41,27 @@ const Dashboard = () => {
     }
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusBadgeVariant = (status) => {
     const styles = {
-      pending: 'bg-yellow-100 text-yellow-700',
-      confirmed: 'bg-blue-100 text-blue-700',
-      completed: 'bg-green-100 text-green-700',
-      cancelled: 'bg-red-100 text-red-700',
+      pending: 'warning',
+      confirmed: 'default',
+      completed: 'success',
+      cancelled: 'destructive',
     };
-    return styles[status] || 'bg-gray-100 text-gray-700';
+    return styles[status] || 'secondary';
   };
 
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+        <div className="space-y-6">
+          <Skeleton className="h-12 w-1/3" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
         </div>
       </AdminLayout>
     );
@@ -59,209 +69,173 @@ const Dashboard = () => {
 
   return (
     <AdminLayout>
-
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-          Welcome, {user?.name}! 🛡️
+        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+          Welcome, {user?.name}! 👋
         </h1>
-        <p className="text-gray-500 mt-1">
-          System overview and analytics
+        <p className="text-slate-500 mt-2">
+          Here's what's happening with your clinic today.
         </p>
       </div>
 
       {/* Main Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {[
           {
             label: 'Total Patients',
             value: stats?.users?.totalPatients || 0,
-            icon: <FaUsers className="text-3xl" />,
-            bg: 'bg-gradient-to-br from-blue-500 to-blue-600',
+            icon: <Users className="h-6 w-6 text-blue-600" />,
+            bgColor: 'bg-blue-50',
           },
           {
             label: 'Total Doctors',
             value: stats?.users?.totalDoctors || 0,
-            icon: <FaUserMd className="text-3xl" />,
-            bg: 'bg-gradient-to-br from-green-500 to-green-600',
+            icon: <Stethoscope className="h-6 w-6 text-green-600" />,
+            bgColor: 'bg-green-50',
           },
           {
             label: 'Appointments',
             value: stats?.appointments?.total || 0,
-            icon: <FaCalendarAlt className="text-3xl" />,
-            bg: 'bg-gradient-to-br from-orange-500 to-orange-600',
+            icon: <Calendar className="h-6 w-6 text-orange-600" />,
+            bgColor: 'bg-orange-50',
           },
           {
             label: 'Revenue',
             value: `₹${stats?.totalRevenue || 0}`,
-            icon: <FaRupeeSign className="text-3xl" />,
-            bg: 'bg-gradient-to-br from-purple-500 to-purple-600',
+            icon: <IndianRupee className="h-6 w-6 text-purple-600" />,
+            bgColor: 'bg-purple-50',
           },
         ].map((stat, index) => (
-          <div
-            key={index}
-            className={`${stat.bg} text-white rounded-xl p-6 shadow-lg`}
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-white/80 text-sm font-medium">
-                  {stat.label}
-                </p>
-                <p className="text-3xl font-bold mt-2">{stat.value}</p>
+          <Card key={index} className="border-none shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-500">{stat.label}</p>
+                  <p className="text-3xl font-bold text-slate-900 mt-2">{stat.value}</p>
+                </div>
+                <div className={`p-4 rounded-2xl ${stat.bgColor}`}>
+                  {stat.icon}
+                </div>
               </div>
-              <div className="opacity-80">{stat.icon}</div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
-      {/* Doctor Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        {[
-          {
-            label: 'Pending Approval',
-            value: stats?.doctors?.pending || 0,
-            icon: <FaClock className="text-2xl" />,
-            color: 'text-yellow-600',
-            bg: 'bg-yellow-50',
-            border: 'border-yellow-200',
-          },
-          {
-            label: 'Approved Doctors',
-            value: stats?.doctors?.approved || 0,
-            icon: <FaCheckCircle className="text-2xl" />,
-            color: 'text-green-600',
-            bg: 'bg-green-50',
-            border: 'border-green-200',
-          },
-          {
-            label: 'Rejected Doctors',
-            value: stats?.doctors?.rejected || 0,
-            icon: <FaTimesCircle className="text-2xl" />,
-            color: 'text-red-600',
-            bg: 'bg-red-50',
-            border: 'border-red-200',
-          },
-        ].map((stat, index) => (
-          <div
-            key={index}
-            className={`${stat.bg} ${stat.border} border rounded-xl p-5`}
-          >
-            <div className="flex items-center gap-4">
-              <div className={`${stat.color} p-3 bg-white rounded-lg`}>
-                {stat.icon}
-              </div>
-              <div>
-                <p className="text-gray-500 text-sm">{stat.label}</p>
-                <p className={`text-2xl font-bold ${stat.color}`}>
-                  {stat.value}
-                </p>
-              </div>
+      {/* Doctor Stats & Appointment Stats */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Doctor Stats */}
+        <Card className="border-none shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Doctor Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[
+                { label: 'Pending Approval', value: stats?.doctors?.pending || 0, icon: <Clock className="w-5 h-5 text-yellow-600" />, bg: 'bg-yellow-100' },
+                { label: 'Approved', value: stats?.doctors?.approved || 0, icon: <CheckCircle2 className="w-5 h-5 text-green-600" />, bg: 'bg-green-100' },
+                { label: 'Rejected', value: stats?.doctors?.rejected || 0, icon: <XCircle className="w-5 h-5 text-red-600" />, bg: 'bg-red-100' },
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className={`p-2 rounded-lg ${item.bg}`}>
+                      {item.icon}
+                    </div>
+                    <span className="font-medium text-slate-700">{item.label}</span>
+                  </div>
+                  <span className="font-bold text-slate-900 text-lg">{item.value}</span>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
-      </div>
+          </CardContent>
+        </Card>
 
-      {/* Appointment Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {[
-          {
-            label: 'Pending',
-            value: stats?.appointments?.pending || 0,
-            color: 'bg-yellow-500',
-          },
-          {
-            label: 'Confirmed',
-            value: stats?.appointments?.confirmed || 0,
-            color: 'bg-blue-500',
-          },
-          {
-            label: 'Completed',
-            value: stats?.appointments?.completed || 0,
-            color: 'bg-green-500',
-          },
-          {
-            label: 'Cancelled',
-            value: stats?.appointments?.cancelled || 0,
-            color: 'bg-red-500',
-          },
-        ].map((stat, index) => (
-          <div key={index} className="bg-white rounded-xl shadow-sm p-5">
-            <div
-              className={`w-3 h-3 ${stat.color} rounded-full mb-2`}
-            ></div>
-            <p className="text-gray-500 text-xs">{stat.label}</p>
-            <p className="text-2xl font-bold text-gray-800">
-              {stat.value}
-            </p>
-          </div>
-        ))}
+        {/* Appointment Stats */}
+        <Card className="border-none shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Appointment Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+             <div className="grid grid-cols-2 gap-4">
+              {[
+                { label: 'Pending', value: stats?.appointments?.pending || 0, dot: 'bg-yellow-500' },
+                { label: 'Confirmed', value: stats?.appointments?.confirmed || 0, dot: 'bg-blue-500' },
+                { label: 'Completed', value: stats?.appointments?.completed || 0, dot: 'bg-green-500' },
+                { label: 'Cancelled', value: stats?.appointments?.cancelled || 0, dot: 'bg-red-500' },
+              ].map((stat, idx) => (
+                <div key={idx} className="p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`w-2.5 h-2.5 rounded-full ${stat.dot}`} />
+                    <span className="text-sm font-medium text-slate-500">{stat.label}</span>
+                  </div>
+                  <span className="text-2xl font-bold text-slate-900">{stat.value}</span>
+                </div>
+              ))}
+             </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Recent Appointments */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">
-            Recent Appointments
-          </h2>
+      <Card className="border-none shadow-sm">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-lg font-semibold">Recent Appointments</CardTitle>
           <Link
             to="/admin/appointments"
-            className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center gap-1"
+            className="text-primary hover:text-primary/80 text-sm font-medium flex items-center gap-1 transition-colors"
           >
             View All
-            <FaArrowRight className="text-xs" />
+            <ArrowRight className="w-4 h-4" />
           </Link>
-        </div>
-
-        {stats?.recentAppointments?.length > 0 ? (
-          <div className="space-y-3">
-            {stats.recentAppointments.map((appointment) => (
-              <div
-                key={appointment._id}
-                className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-lg gap-4"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                    <FaUser className="text-purple-600" />
+        </CardHeader>
+        <CardContent>
+          {stats?.recentAppointments?.length > 0 ? (
+            <div className="divide-y divide-slate-100">
+              {stats.recentAppointments.map((appointment) => (
+                <div
+                  key={appointment._id}
+                  className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
+                >
+                  <div className="flex items-center gap-4">
+                    <Avatar className="w-12 h-12">
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        <User className="w-6 h-6" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-semibold text-slate-900">
+                        {appointment.patientId?.name}
+                      </p>
+                      <p className="text-sm text-slate-500 flex items-center gap-1">
+                        <Stethoscope className="w-3 h-3" />
+                        Dr. {appointment.doctorId?.userId?.name}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-gray-800 text-sm">
-                      {appointment.patientId?.name}
-                    </p>
-                    <p className="text-gray-500 text-xs">
-                      with {appointment.doctorId?.userId?.name}
-                    </p>
+
+                  <div className="flex items-center gap-6 sm:gap-8">
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-slate-900">{appointment.date}</p>
+                      <p className="text-xs text-slate-500">{appointment.timeSlot}</p>
+                    </div>
+                    <Badge variant={getStatusBadgeVariant(appointment.status)} className="capitalize min-w-[80px] justify-center">
+                      {appointment.status}
+                    </Badge>
                   </div>
                 </div>
-
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="text-center">
-                    <p className="text-gray-500 text-xs">Date</p>
-                    <p className="font-medium text-gray-800 text-sm">
-                      {appointment.date}
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-gray-500 text-xs">Time</p>
-                    <p className="font-medium text-gray-800 text-sm">
-                      {appointment.timeSlot}
-                    </p>
-                  </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusBadge(appointment.status)}`}
-                  >
-                    {appointment.status}
-                  </span>
-                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Calendar className="w-8 h-8 text-slate-400" />
               </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-500 text-center py-8">
-            No recent appointments
-          </p>
-        )}
-      </div>
+              <p className="text-slate-500 font-medium">No recent appointments</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </AdminLayout>
   );
 };
