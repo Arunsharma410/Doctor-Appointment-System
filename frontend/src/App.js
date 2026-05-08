@@ -145,6 +145,15 @@ function App() {
       <DoctorAvailability />
     </DoctorRoute>
   }
+  
+/>
+<Route
+  path="/doctor/profile"
+  element={
+    <DoctorRoute>
+      <DoctorProfile />
+    </DoctorRoute>
+  }
 />
 {/* Doctor Details Route */}
 <Route
